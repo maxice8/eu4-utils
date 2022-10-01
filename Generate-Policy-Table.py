@@ -4,7 +4,7 @@ import io
 import os
 from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
 import sys
-from typing import Optional, Tuple, Any, List
+from typing import Optional, Any, List
 
 
 def make_markdown_table(array):
@@ -32,7 +32,15 @@ def make_markdown_table(array):
     return markdown
 
 
-def is_group_idea(idea_group: Tuple[str, List[Any]]) -> Optional[str]:
+def is_group_idea(idea_group: tuple[str, list[Any]]) -> Optional[str]:
+    """Checks if a tuple is a Group Idea by checking if they have a category field with a valid monarch power point
+
+    Args:
+        idea_group (tuple[str, list[Any]]): Tuple representing the Idea Group
+
+    Returns:
+        Optional[str]: If the tuple is a Group Idea then return its name, otherwise return none
+    """
     # First element is the name, the second is a list
     elements = idea_group[1]
 
@@ -46,6 +54,14 @@ def is_group_idea(idea_group: Tuple[str, List[Any]]) -> Optional[str]:
 
 
 def read_all_files_in_dir(dir: str) -> str:
+    """Read all Files in a directory and return as a string
+
+    Args:
+        dir (str): path, relative or absolute, to the directory
+
+    Returns:
+        str: all the files in dir, concatenated with a newline of separation
+    """
     wfd = io.StringIO()
     for file in os.listdir(dir):
         with open(f"{dir}/{file}", "r") as fd:
@@ -92,10 +108,26 @@ def generate_policy_list(dir) -> dict[str, list[str]]:
 
 
 if __name__ == "__main__":
+    # If no args are given then quit
     if len(sys.argv) < 2:
-        sys.exit(99)
+        print("missing argument: dir", file=sys.stderr)
+        sys.exit(1)
 
-    os.chdir(sys.argv[1])
+    # Switch to the path given to us
+    try:
+        os.chdir(sys.argv[1])
+    except FileNotFoundError:
+        print("%s: does not exist" % sys.argv[1], file=sys.stderr)
+        sys.exit(1)
+    except PermissionError:
+        print("%s: permission denied" % sys.argv[1], file=sys.stderr)
+        sys.exit(1)
+    except NotADirectoryError:
+        print("%s: not a directory" % sys.argv[1], file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print("%s: %s" % (sys.argv[1], e), file=sys.stderr)
+        sys.exit(1)
 
     lexer = SimpleClausewitzLexer()
     parser = SimpleClausewitzParser()

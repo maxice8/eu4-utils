@@ -82,6 +82,64 @@ def read_all_files_in_dir(dir: str) -> str:
     return wfd.getvalue()
 
 
+def generate_localisation(dir: str, base: str = None) -> dict[str, dict[str, Any]]:
+    """Generate a dictionary of dictionary representing localisation keys
+
+    Args:
+        dir (str): directory of the mod to get localisation
+        base (str, optional): base game to get localisation as a backup. Defaults to None.
+
+    Returns:
+        dict[str, dict[str, Any]]: A dictionary of dictionaries representing localisation keys
+    """
+
+    from Paradox_LocParser import ParadoxLocalisationLexer, ParadoxLocalisationParser
+
+    localisation: dict[str, dict[str, Any]] = dict()
+
+    # Will hold ALL the files that we are going to parse
+    wfd = io.StringIO()
+
+    # Get all the base games ones if given to us
+    if base is not None:
+        # For some reason args.base is passed as a [list] but it only
+        # receives a single argument
+        for file in os.listdir(base[0] + "/localisation"):
+            if not file.endswith("l_english.yml"):
+                continue
+            with open(
+                f"{base[0]}/localisation/{file}", "r", encoding="utf-8-sig"
+            ) as fd:
+                wfd.write((fd.read()))
+                wfd.write("\n")
+
+    # Get all the modding ones after as they are the ones that will
+    # end up composing the final dictionary, I really should make the
+    # parser work by having a single dictionary.
+    for file in os.listdir(dir + "/localisation"):
+        if not file.endswith("l_english.yml"):
+            continue
+        with open(f"{dir}/localisation/{file}", "r", encoding="utf-8-sig") as fd:
+            wfd.write(fd.read())
+            wfd.write("\n")
+
+    stream = wfd.getvalue()
+
+    # Lex and Parse
+    lexer = ParadoxLocalisationLexer()
+    parser = ParadoxLocalisationParser()
+    result = parser.parse(lexer.tokenize(stream))
+
+    # Create our new dictionary
+    for res in result:
+        if type(res) is not dict:
+            continue
+
+        localisation[res["key"]] = {"value": res["value"], "version": res["version"]}
+
+    return localisation
+
+
 def generate_policy_list(dir) -> dict[str, list[str]]:
     """Generates a dictionary of defined policies returning a dictionary with all policies and what ideas one must have. Assumes ideas found via potential = { has_idea_group = <idea> } are the only requirements
 
@@ -130,6 +188,21 @@ def parse_args(args=None):
         "moddir",
         type=str,
         help="Mod directory to read",
+    )
+    parser.add_argument(
+        "-l",
+        "--localise",
+        default=False,
+        action="store_true",
+        help="Localise the ideas and policies in the table",
+    )
+    parser.add_argument(
+        "-b",
+        "--base",
+        type=str,
+        default=None,
+        nargs=1,
+        help="Location of base game, used for any missing localisation",
     )
     parser.add_argument(
         "-o",
@@ -225,6 +298,22 @@ def main(args=None) -> int:
             i += 1
 
         Idea_Table.append(table_row)
+
+    # Localise
+    if args.localise:
+        localisation = generate_localisation(moddir, base=args.base)
+
+        # Run over all the values of the table and replace them.
+        for idx, x in enumerate(Idea_Table):
+            for idy, y in enumerate(x):
+                # Try accessing it, then continue
+                try:
+                    localisation[y]
+                except KeyError:
+                    pass
+                else:
+                    # The [1:-1] is to remove the double-quotes
+                    Idea_Table[idx][idy] = localisation[y]["value"][1:-1]
 
     args.out.write(make_markdown_table(Idea_Table))
     return 0

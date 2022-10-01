@@ -25,10 +25,10 @@
             pip
             # Runtime
             sly
+            markdown
             # Development
             mypy
             black
-
             # Add more deps here
           ]);
         in

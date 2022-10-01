@@ -203,6 +203,8 @@ def main(args=None) -> int:
             if i == index:
                 table_row.append(" - ")
             elif (
+                # Ante-Bellum specific as the Global Domination ideas
+                # has no policies as intended
                 Group_Ideas[i + 1] == "globaldomination_ideas"
                 or idea == "globaldomination_ideas"
             ):
@@ -216,10 +218,8 @@ def main(args=None) -> int:
                         has_found_policy = True
                         table_row.append(key)
 
-                # If we can't tell the user
+                # If we can't find a policy
                 if not has_found_policy:
-                    # Ante-Bellum specific as the Global Domination ideas
-                    # has no policies as intended
                     table_row.append("missing")
 
             i += 1

@@ -1,44 +1,109 @@
 # IdeasLexer
 
+"""
+Taken from: https://github.com/QAston/clausewitz-antlr-grammar
+grammar CLAUSEWITZ;
+
+file
+   : (pair)*
+   ;
+
+map
+   : '{' (pair)* '}'
+   ;
+
+pair
+   : STRING SPECIFIER value
+   ;
+
+SPECIFIER
+    : '=' | '<>' | '>' | '<' | '<=' | '>=' ;
+
+array
+   : '{' value+ '}'
+   ;
+
+value
+   : INT
+   | PCT
+   | REAL
+   | DATE
+   | STRING
+   | map
+   | array
+   ;
+
+INT
+   : '-'?[0-9]+;
+
+PCT
+   : '-'?[0-9]+'%';
+
+REAL
+   : '-'?[0-9]+'.'[0-9]+;
+
+DATE
+   : [0-9]+'.'[0-9]+'.'[0-9]+;
+
+STRING
+   : '"'(~["])*'"'
+   | [A-Za-z][A-Za-z_0-9.%-]*
+   ;
+
+WS
+   : [ \t\n\r] + -> skip
+   ;
+
+LINE_COMMENT
+    : '#'~[\r\n]* -> channel(HIDDEN)
+    ;
+"""
+
 from sly import Lexer, Parser
+
 
 class SimpleClausewitzLexer(Lexer):
     tokens = {
-        STATEMENT,
+        STRING,
         INTEGER,
         FLOAT,
-        BOOL
+        BOOL,
+        DATE,
+        SPECIFIER
     }
 
-    literals = { '{', '=', '}' }
+    literals = { '{', '}' }
     ignore = ' \t'
+
+    SPECIFIER = r"(=|>|>|<|<=|>=)"
 
     @_(r"(yes|no)")
     def BOOL(self, t):
         t.value = bool(t.value)
         return t
 
-    @_(r"\d+\.\d*")
+    DATE = r"\-?\d+\.\d+\.\d+"
+
+    @_(r"\-?\d+\.\d+")
     def FLOAT(self, t):
         t.value = float(t.value)
         return t
 
-    @_(r'\d+')
+    @_(r'\-?\d+')
     def INTEGER(self, t):
         t.value = int(t.value)
         return t
 
-    # Inside a "double-quoted string" we must take space into
-    # account too
-    @_(r'[\w_\.-]+', r'".*?"')
-    def STATEMENT(self, t):
+    # STRING is just a SYMBOL but it can contain whitespace
+    # due to being enclosed in double quotes
+    @_(r'"[^"]*"', r'[A-Za-z][A-Za-z_0-9.%-]*')
+    def STRING(self, t):
         # Strip double-quotes from a quoted string with no
         # spaces
         if '\"' in t.value:
             if ' ' not in t.value:
                 t.value = t.value.strip('\"')
         return t
-
     
     # Line number tracking
     @_(r'\n')
@@ -48,41 +113,61 @@ class SimpleClausewitzLexer(Lexer):
     # Ignore comments
     ignore_comment = r'\#.*'
 
+    def error(self, t):
+        print("Illegal Character '%s'" % t.value[0])
+        self.index += 1
+
 class SimpleClausewitzParser(Parser):
     # Need
     tokens = SimpleClausewitzLexer.tokens
 
-    @_('{ assignment }')
-    def expression(self, p):
-        return p.assignment
+    @_('{ pair }')
+    def file(self, p):
+        return p.pair
 
-    @_('statement "=" "{" { assignment } "}"')
-    def assignment(self, p):
-        return [p.statement] + p.assignment
+    @_('"{" { pair } "}"')
+    def map(self, p):
+        return p.pair
 
-    @_('statement "=" "{" { statement } "}"')
-    def assignment(self, p):
-        return [p.statement0] + p.statement1
-
-    @_('statement "=" statement')
-    def assignment(self, p):
+    @_('field SPECIFIER value')
+    def pair(self, p):
         return p[0], p[2]
 
+    @_('"{" { value } "}"')
+    def array(self, p):
+        return p.value
+
+    @_('DATE')
+    def value(self, p):
+        return p[0]
+
     @_('BOOL')
-    def statement(self, p):
+    def value(self, p):
         return p[0]
 
     @_('INTEGER')
-    def statement(self, p):
+    def value(self, p):
         return p[0]
 
     @_('FLOAT')
-    def statement(self, p):
+    def value(self, p):
         return p[0]
 
-    @_('STATEMENT')
-    def statement(self, p):
+    @_('STRING')
+    def value(self, p):
         return p[0]
+    
+    @_('STRING')
+    def field(self, p):
+        return p[0]
+
+    @_('map')
+    def value(self, p):
+        return p.map
+
+    @_('array')
+    def value(self, p):
+        return p.array
 
 if __name__ == '__main__':
     lexer = SimpleClausewitzLexer()
@@ -93,6 +178,8 @@ if __name__ == '__main__':
         category = DIP
         
         trigger = {
+            death_date = 1445.2.2
+
 		    has_dlc = "Mandate of Heaven"
 		    is_emperor_of_china = yes
     	}
@@ -109,7 +196,8 @@ if __name__ == '__main__':
 		    NOT = {
 			    has_country_flag = ab_cant_pick_domination
 		    }
-            ship_durability = 0.5
+            #1 = 2
+            ship_durability = -0.5
 	    }
     }
     south_pacific_area = {
@@ -127,5 +215,4 @@ if __name__ == '__main__':
 
     lexed = lexer.tokenize(cw_text)
     result = parser.parse(lexed)
-    for res in result:
-        print(res)
+    print(result)

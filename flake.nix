@@ -29,6 +29,9 @@
             # Development
             mypy
             black
+            flake8
+            flake8-import-order
+            flake8-docstrings
             # Add more deps here
           ]);
         in

@@ -202,26 +202,25 @@ def main(args=None) -> int:
         while i < num_of_ideas:
             if i == index:
                 table_row.append(" - ")
+            elif (
+                Group_Ideas[i + 1] == "globaldomination_ideas"
+                or idea == "globaldomination_ideas"
+            ):
+                table_row.append("No Policies by Design")
             else:
-                if (
-                    Group_Ideas[i + 1] == "globaldomination_ideas"
-                    or idea == "globaldomination_ideas"
-                ):
-                    table_row.append("No Policies by Design")
-                else:
-                    has_found_policy = False
-                    # Check if we can find a policy, and map it to the table
-                    for key, values in policies.items():
-                        # Add 1 as we index over 0 and we need to catch up
-                        if idea in values and Group_Ideas[i + 1] in values:
-                            has_found_policy = True
-                            table_row.append(key)
+                has_found_policy = False
+                # Check if we can find a policy, and map it to the table
+                for key, values in policies.items():
+                    # Add 1 as we index over 0 and we need to catch up
+                    if idea in values and Group_Ideas[i + 1] in values:
+                        has_found_policy = True
+                        table_row.append(key)
 
-                    # If we can't tell the user
-                    if not has_found_policy:
-                        # Ante-Bellum specific as the Global Domination ideas
-                        # has no policies as intended
-                        table_row.append("missing")
+                # If we can't tell the user
+                if not has_found_policy:
+                    # Ante-Bellum specific as the Global Domination ideas
+                    # has no policies as intended
+                    table_row.append("missing")
 
             i += 1
 

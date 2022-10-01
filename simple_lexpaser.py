@@ -75,7 +75,7 @@ class SimpleClausewitzLexer(Lexer):
     literals = { '{', '}' }
     ignore = ' \t'
 
-    SPECIFIER = r"(=|>|>|<|<=|>=)"
+    SPECIFIER = r'='
 
     @_(r"(yes|no)")
     def BOOL(self, t):

@@ -116,7 +116,7 @@ def generate_policy_list(dir) -> dict[str, list[str]]:
             for elem in element[1]:
                 if elem[0] == "has_idea_group":
                     # If the key does not exist, create it
-                    if not policy_name in Policies:
+                    if policy_name not in Policies:
                         Policies[policy_name] = list()
 
                     # Then append to it

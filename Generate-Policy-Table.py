@@ -5,7 +5,7 @@ import io
 import os
 from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
 import sys
-from typing import Optional, Any
+from typing import Any
 
 LEXER = SimpleClausewitzLexer()
 PARSER = SimpleClausewitzParser()
@@ -43,14 +43,14 @@ def make_markdown_table(array: list[Any]) -> str:
     return markdown
 
 
-def is_group_idea(idea_group: tuple[str, list[Any]]) -> Optional[str]:
+def is_group_idea(idea_group: tuple[str, list[Any]]) -> str | None:
     """Checks if a tuple is a Group Idea by checking if they have a category field with a valid monarch power point
 
     Args:
         idea_group (tuple[str, list[Any]]): Tuple representing the Idea Group
 
     Returns:
-        Optional[str]: If the tuple is a Group Idea then return its name, otherwise return none
+        str | None: If the tuple is a Group Idea then return its name, otherwise return none
     """
     # First element is the name, the second is a list
     elements = idea_group[1]

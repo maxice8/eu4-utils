@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# lexpar
+
+
+import argparse
+import sys
+
+
+def parse_args(args=None):
+    desc = """
+    Lex Clausewitz script files
+    """
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument(
+        "files",
+        type=argparse.FileType("r"),
+        action="store",
+        nargs="+",
+        help="one or more files to Lex",
+    )
+    parser.add_argument(
+        "-l",
+        "--localise",
+        action="store_true",
+        default=False,
+        help="Use Localisation Lexer and Parser instead of Clausewitz's",
+    )
+    parser.add_argument(
+        "-p",
+        "--parse",
+        action="store_true",
+        default=False,
+        help="Parse file after Lexing",
+    )
+    return parser.parse_args(args)
+
+
+def main(args=None) -> int:
+    args = parse_args(args)
+
+    lexer = None
+    parser = None
+
+    if args.localise:
+        from Paradox_LocParser import ParadoxLocalisationLexer
+
+        lexer = ParadoxLocalisationLexer()
+
+        if args.parse:
+            from Paradox_LocParser import ParadoxLocalisationParser
+
+            parser = ParadoxLocalisationParser()
+
+    else:
+        from Simple_LexParser import SimpleClausewitzLexer
+
+        lexer = SimpleClausewitzLexer()
+
+        if args.parse:
+            from Simple_LexParser import SimpleClausewitzParser
+
+            parser = SimpleClausewitzParser()
+
+    for file in args.files:
+        tokens = lexer.tokenize(file.read())
+        if args.parse:
+            parsed = parser.parse(tokens)
+            print(parsed)
+        else:
+            for tok in tokens:
+                print(tok)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -77,7 +77,8 @@ class SimpleClausewitzLexer(Lexer):
 
     SPECIFIER = r'='
 
-    @_(r"(yes|no)")
+    # Very important to use Word Boundary when grabbing these
+    @_(r"\b(yes|no)\b")
     def BOOL(self, t):
         t.value = bool(t.value)
         return t
@@ -215,4 +216,5 @@ if __name__ == '__main__':
 
     lexed = lexer.tokenize(cw_text)
     result = parser.parse(lexed)
-    print(result)
+    for res in result:
+        print(res)

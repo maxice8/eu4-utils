@@ -3,12 +3,12 @@
 import argparse
 import io
 import os
-from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
+from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
 import sys
 from typing import Any
 
-LEXER = SimpleClausewitzLexer()
-PARSER = SimpleClausewitzParser()
+LEXER = SimpleCWLexer()
+PARSER = SimpleCWParser()
 
 
 def make_markdown_table(array: list[Any]) -> str:
@@ -250,7 +250,7 @@ def main(args=None) -> int:
     if args.localise:
         # Helper function to generate dictionary mapping keys
         # to values and versions
-        from Paradox_LocParser import generate_localisation
+        from Paradox_Localisation import generate_localisation
 
         localisation = generate_localisation(moddir, base=args.base)
 

@@ -42,24 +42,24 @@ def main(args=None) -> int:
     parser = None
 
     if args.localise:
-        from Paradox_LocParser import ParadoxLocalisationLexer
+        from Paradox_Localisation import LocalisationLexer
 
-        lexer = ParadoxLocalisationLexer()
+        lexer = LocalisationLexer()
 
         if args.parse:
-            from Paradox_LocParser import ParadoxLocalisationParser
+            from Paradox_Localisation import LocalisationParser
 
-            parser = ParadoxLocalisationParser()
+            parser = LocalisationParser()
 
     else:
-        from Simple_LexParser import SimpleClausewitzLexer
+        from Simple_Clausewitz import SimpleCWLexer
 
-        lexer = SimpleClausewitzLexer()
+        lexer = SimpleCWLexer()
 
         if args.parse:
-            from Simple_LexParser import SimpleClausewitzParser
+            from Simple_Clausewitz import SimpleCWParser
 
-            parser = SimpleClausewitzParser()
+            parser = SimpleCWParser()
 
     for file in args.files:
         tokens = lexer.tokenize(file.read())

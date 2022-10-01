@@ -8,7 +8,12 @@ from typing import Optional, Tuple, Any, List
 
 
 def make_markdown_table(array):
-    """the same input as above"""
+    """
+    Taken from:
+    https://gist.github.com/m0neysha/219bad4b02d2008e0154?permalink_comment_id=4201220#gistcomment-4201220
+
+    Made minor change to centralize text by default.
+    """
 
     nl = "\n"
 

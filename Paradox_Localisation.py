@@ -4,7 +4,7 @@ from typing import Any
 from sly import Lexer, Parser
 
 
-class ParadoxLocalisationLexer(Lexer):
+class LocalisationLexer(Lexer):
     tokens = {
         KEY,
         STRING,
@@ -43,8 +43,8 @@ class ParadoxLocalisationLexer(Lexer):
 
 
 # TODO: make so this returns a single shared dict with different keys, in the meantime we will have to deal with compressing it ourselves.
-class ParadoxLocalisationParser(Parser):
-    tokens = ParadoxLocalisationLexer.tokens
+class LocalisationParser(Parser):
+    tokens = LocalisationLexer.tokens
 
     @_("{ key }")
     def expr(self, p):
@@ -128,8 +128,8 @@ def generate_localisation(dir: str, base: str = None) -> dict[str, dict[str, Any
     stream = wfd.getvalue()
 
     # Lex and Parse
-    lexer = ParadoxLocalisationLexer()
-    parser = ParadoxLocalisationParser()
+    lexer = LocalisationLexer()
+    parser = LocalisationParser()
     result = parser.parse(lexer.tokenize(stream))
 
     # Create our new dictionary

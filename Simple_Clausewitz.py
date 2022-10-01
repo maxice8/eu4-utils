@@ -62,7 +62,7 @@ LINE_COMMENT
 from sly import Lexer, Parser
 
 
-class SimpleClausewitzLexer(Lexer):
+class SimpleCWLexer(Lexer):
     tokens = {STRING, INTEGER, FLOAT, BOOL, DATE, SPECIFIER}
 
     literals = {"{", "}"}
@@ -112,9 +112,9 @@ class SimpleClausewitzLexer(Lexer):
         self.index += 1
 
 
-class SimpleClausewitzParser(Parser):
+class SimpleCWParser(Parser):
     # Need
-    tokens = SimpleClausewitzLexer.tokens
+    tokens = SimpleCWLexer.tokens
 
     @_("{ pair }")
     def file(self, p):

@@ -63,19 +63,12 @@ from sly import Lexer, Parser
 
 
 class SimpleClausewitzLexer(Lexer):
-    tokens = {
-        STRING,
-        INTEGER,
-        FLOAT,
-        BOOL,
-        DATE,
-        SPECIFIER
-    }
+    tokens = {STRING, INTEGER, FLOAT, BOOL, DATE, SPECIFIER}
 
-    literals = { '{', '}' }
-    ignore = ' \t'
+    literals = {"{", "}"}
+    ignore = " \t"
 
-    SPECIFIER = r'='
+    SPECIFIER = r"="
 
     # Very important to use Word Boundary when grabbing these
     @_(r"\b(yes|no)\b")
@@ -90,39 +83,40 @@ class SimpleClausewitzLexer(Lexer):
         t.value = float(t.value)
         return t
 
-    @_(r'\-?\d+')
+    @_(r"\-?\d+")
     def INTEGER(self, t):
         t.value = int(t.value)
         return t
 
     # STRING is just a SYMBOL but it can contain whitespace
     # due to being enclosed in double quotes
-    @_(r'"[^"]*"', r'[A-Za-z][A-Za-z_0-9.%-]*')
+    @_(r'"[^"]*"', r"[A-Za-z][A-Za-z_0-9.%-]*")
     def STRING(self, t):
         # Strip double-quotes from a quoted string with no
         # spaces
-        if '\"' in t.value:
-            if ' ' not in t.value:
-                t.value = t.value.strip('\"')
+        if '"' in t.value:
+            if " " not in t.value:
+                t.value = t.value.strip('"')
         return t
-    
+
     # Line number tracking
-    @_(r'\n')
+    @_(r"\n")
     def ignore_newline(self, t):
-        self.lineno += t.value.count('\n')
+        self.lineno += t.value.count("\n")
 
     # Ignore comments
-    ignore_comment = r'\#.*'
+    ignore_comment = r"\#.*"
 
     def error(self, t):
         print("Illegal Character '%s'" % t.value[0])
         self.index += 1
 
+
 class SimpleClausewitzParser(Parser):
     # Need
     tokens = SimpleClausewitzLexer.tokens
 
-    @_('{ pair }')
+    @_("{ pair }")
     def file(self, p):
         return p.pair
 
@@ -130,7 +124,7 @@ class SimpleClausewitzParser(Parser):
     def map(self, p):
         return p.pair
 
-    @_('field SPECIFIER value')
+    @_("field SPECIFIER value")
     def pair(self, p):
         return p[0], p[2]
 
@@ -138,43 +132,44 @@ class SimpleClausewitzParser(Parser):
     def array(self, p):
         return p.value
 
-    @_('DATE')
+    @_("DATE")
     def value(self, p):
         return p[0]
 
-    @_('BOOL')
+    @_("BOOL")
     def value(self, p):
         return p[0]
 
-    @_('INTEGER')
+    @_("INTEGER")
     def value(self, p):
         return p[0]
 
-    @_('FLOAT')
+    @_("FLOAT")
     def value(self, p):
         return p[0]
 
-    @_('STRING')
+    @_("STRING")
     def value(self, p):
         return p[0]
-    
-    @_('STRING')
+
+    @_("STRING")
     def field(self, p):
         return p[0]
 
-    @_('map')
+    @_("map")
     def value(self, p):
         return p.map
 
-    @_('array')
+    @_("array")
     def value(self, p):
         return p.array
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     lexer = SimpleClausewitzLexer()
     parser = SimpleClausewitzParser()
 
-    cw_text = '''
+    cw_text = """
     celestial_ideas = {
         category = DIP
         
@@ -204,7 +199,7 @@ if __name__ == '__main__':
     south_pacific_area = {
 	    1700 1701 1702 1703 1704 1705 1706 1707 1708 1709 1710 1711 1712 1716 1717  1718 1719 1730 1736 1737 1740 1741
     }
-    '''
+    """
 
     """
     cw_text = '''

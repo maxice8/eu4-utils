@@ -5,6 +5,11 @@
 import argparse
 import sys
 
+from Simple_Clausewitz.lexer import SimpleCWLexer
+from Simple_Clausewitz.parser import SimpleCWParser
+from Paradox_Localisation.lexer import LocalisationLexer
+from Paradox_Localisation.parser import LocalisationParser
+
 
 def parse_args(args=None):
     desc = """
@@ -42,23 +47,14 @@ def main(args=None) -> int:
     parser = None
 
     if args.localise:
-        from Paradox_Localisation import LocalisationLexer
-
         lexer = LocalisationLexer()
 
         if args.parse:
-            from Paradox_Localisation import LocalisationParser
-
             parser = LocalisationParser()
 
     else:
-        from Simple_Clausewitz import SimpleCWLexer
-
         lexer = SimpleCWLexer()
-
         if args.parse:
-            from Simple_Clausewitz import SimpleCWParser
-
             parser = SimpleCWParser()
 
     for file in args.files:

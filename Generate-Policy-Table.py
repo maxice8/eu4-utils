@@ -3,7 +3,8 @@
 import argparse
 import io
 import os
-from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
+from Simple_Clausewitz.lexer import SimpleCWLexer
+from Simple_Clausewitz.parser import SimpleCWParser
 import sys
 from typing import Any
 
@@ -250,7 +251,7 @@ def main(args=None) -> int:
     if args.localise:
         # Helper function to generate dictionary mapping keys
         # to values and versions
-        from Paradox_Localisation import generate_localisation
+        from Paradox_Localisation.utils import generate_localisation
 
         localisation = generate_localisation(moddir, base=args.base)
 

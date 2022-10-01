@@ -5,7 +5,7 @@ import io
 import os
 from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
 import sys
-from typing import Optional, Any, List
+from typing import Optional, Any
 
 LEXER = SimpleClausewitzLexer()
 PARSER = SimpleClausewitzParser()
@@ -76,6 +76,14 @@ def read_all_files_in_dir(dir: str) -> str:
 
 
 def generate_policy_list(dir) -> dict[str, list[str]]:
+    """Generates a dictionary of defined policies returning a dictionary with all policies and what ideas one must have. Assumes ideas found via potential = { has_idea_group = <idea> } are the only requirements
+
+    Args:
+        dir (_type_): path to the mod directory
+
+    Returns:
+        dict[str, list[str]]: Dictionary with the keys named after policies, the value of a key is a list of ideas that are required
+    """
     stream = read_all_files_in_dir(f"{dir}/common/policies")
     result = PARSER.parse(LEXER.tokenize(stream))
 
@@ -151,7 +159,7 @@ def main(args=None) -> int:
     result = PARSER.parse(LEXER.tokenize(stream))
 
     # The result is a List of all tuples, let's parse it.
-    Group_Ideas: List[str] = [
+    Group_Ideas: list[str] = [
         "-",
     ]
     for idea in result:
@@ -171,7 +179,7 @@ def main(args=None) -> int:
     #  [3 a b - d e]
     #  [4 a b c - e]
     #  [5 a b c d -]]
-    Idea_Table: List[List] = [[]]
+    Idea_Table: list[list] = [[]]
 
     # Re-use the extracted group ideas from the first row
     Idea_Table[0] = Group_Ideas
@@ -182,7 +190,7 @@ def main(args=None) -> int:
     # Skip the first element as it is a '-' and we only
     # want it for the top-most left field
     for index, idea in enumerate(Group_Ideas[1:]):
-        table_row: List[str] = [idea]
+        table_row: list[str] = [idea]
         i = 0
         while i < num_of_ideas:
             if i == index:

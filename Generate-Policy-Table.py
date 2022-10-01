@@ -44,13 +44,15 @@ def make_markdown_table(array: list[Any]) -> str:
 
 
 def is_group_idea(idea_group: tuple[str, list[Any]]) -> str | None:
-    """Checks if a tuple is a Group Idea by checking if they have a category field with a valid monarch power point
+    """Checks if a tuple is a Group Idea by checking if they have a
+    category field with a valid monarch power point
 
     Args:
         idea_group (tuple[str, list[Any]]): Tuple representing the Idea Group
 
     Returns:
-        str | None: If the tuple is a Group Idea then return its name, otherwise return none
+        str | None: If the tuple is a Group Idea then return
+        its name, otherwise return none
     """
     # First element is the name, the second is a list
     elements = idea_group[1]
@@ -83,13 +85,16 @@ def read_all_files_in_dir(dir: str) -> str:
 
 
 def generate_policy_list(dir) -> dict[str, list[str]]:
-    """Generates a dictionary of defined policies returning a dictionary with all policies and what ideas one must have. Assumes ideas found via potential = { has_idea_group = <idea> } are the only requirements
+    """Generates a dictionary of defined policies returning a dictionary
+    with all policies and what ideas one must have. Assumes ideas found
+    via potential = { has_idea_group = <idea> } are the only requirements
 
     Args:
         dir (_type_): path to the mod directory
 
     Returns:
-        dict[str, list[str]]: Dictionary with the keys named after policies, the value of a key is a list of ideas that are required
+        dict[str, list[str]]: Dictionary with the keys named after
+        policies, the value of a key is a list of ideas that are required
     """
     stream = read_all_files_in_dir(f"{dir}/common/policies")
     result = PARSER.parse(LEXER.tokenize(stream))

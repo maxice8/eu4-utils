@@ -147,6 +147,7 @@ if __name__ == "__main__":
                         has_found_policy = True
                         table_row.append(key)
 
+                # If we can't tell the user
                 if not has_found_policy:
                     table_row.append("missing")
 

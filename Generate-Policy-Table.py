@@ -2,8 +2,6 @@
 
 import io
 import os
-from shutil import copyfileobj
-import shutil
 from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
 import sys
 from typing import Optional, Tuple, Any, List
@@ -139,21 +137,25 @@ if __name__ == "__main__":
             if i == index:
                 table_row.append(" - ")
             else:
-                has_found_policy = False
-                # Check if we can find a policy, and map it to the table
-                for key, values in policies.items():
-                    # Add 1 as we index over 0 and we need to catch up
-                    if idea in values and Group_Ideas[i + 1] in values:
-                        has_found_policy = True
-                        table_row.append(key)
+                if (
+                    Group_Ideas[i + 1] == "globaldomination_ideas"
+                    or idea == "globaldomination_ideas"
+                ):
+                    table_row.append("No Policies by Design")
+                else:
+                    has_found_policy = False
+                    # Check if we can find a policy, and map it to the table
+                    for key, values in policies.items():
+                        # Add 1 as we index over 0 and we need to catch up
+                        if idea in values and Group_Ideas[i + 1] in values:
+                            has_found_policy = True
+                            table_row.append(key)
 
-                # If we can't tell the user
-                if not has_found_policy:
-                    # Ante-Bellum specific as the Global Domination ideas
-                    # has no policies as intended
-                    if idea == "globaldomination_ideas":
-                        table_row.append("No Policies by design")
-                    table_row.append("missing")
+                    # If we can't tell the user
+                    if not has_found_policy:
+                        # Ante-Bellum specific as the Global Domination ideas
+                        # has no policies as intended
+                        table_row.append("missing")
 
             i += 1
 

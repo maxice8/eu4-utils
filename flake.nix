@@ -23,15 +23,7 @@
           my-python = pkgs.python3;
           python-with-my-packages = my-python.withPackages (p: with p; [
             pip
-            # Runtime
-            sly
-            markdown
-            # Development
-            mypy
-            black
-            flake8
-            flake8-import-order
-            flake8-docstrings
+            virtualenv
             # Add more deps here
           ]);
         in
@@ -43,10 +35,10 @@
                 buildInputs = [
                   python-with-my-packages
                 ];
+                shellHook = ''
+                  source .venv/bin/activate
+                '';
               };
-          packages = {
-            default = python-with-my-packages;
-          };
         }
       );
 }

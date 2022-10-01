@@ -1,4 +1,4 @@
-# IdeasLexer
+# Simple_LexParser
 
 """
 Taken from: https://github.com/QAston/clausewitz-antlr-grammar

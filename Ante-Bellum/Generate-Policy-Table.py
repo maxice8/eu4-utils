@@ -149,6 +149,10 @@ if __name__ == "__main__":
 
                 # If we can't tell the user
                 if not has_found_policy:
+                    # Ante-Bellum specific as the Global Domination ideas
+                    # has no policies as intended
+                    if idea == "globaldomination_ideas":
+                        table_row.append("No Policies by design")
                     table_row.append("missing")
 
             i += 1

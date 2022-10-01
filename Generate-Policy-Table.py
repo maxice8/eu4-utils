@@ -1,10 +1,14 @@
 # ReadIdeas.py
 
+import argparse
 import io
 import os
 from Simple_LexParser import SimpleClausewitzLexer, SimpleClausewitzParser
 import sys
 from typing import Optional, Any, List
+
+LEXER = SimpleClausewitzLexer()
+PARSER = SimpleClausewitzParser()
 
 
 def make_markdown_table(array):
@@ -72,11 +76,8 @@ def read_all_files_in_dir(dir: str) -> str:
 
 
 def generate_policy_list(dir) -> dict[str, list[str]]:
-    lexer = SimpleClausewitzLexer()
-    parser = SimpleClausewitzParser()
-
     stream = read_all_files_in_dir(f"{dir}/common/policies")
-    result = parser.parse(lexer.tokenize(stream))
+    result = PARSER.parse(LEXER.tokenize(stream))
 
     # Map the policies into a Dictionary with list, and have
     # the ideas we are testing for intersection.
@@ -107,34 +108,47 @@ def generate_policy_list(dir) -> dict[str, list[str]]:
     return Policies
 
 
-if __name__ == "__main__":
-    # If no args are given then quit
-    if len(sys.argv) < 2:
-        print("missing argument: dir", file=sys.stderr)
-        sys.exit(1)
+def parse_args(args=None):
+    d = "Read Group Ideas and Policies from a directory and generate an Markdown table"
+    parser = argparse.ArgumentParser(description=d)
+    parser.add_argument(
+        "moddir",
+        type=str,
+        help="Mod directory to read",
+    )
+    parser.add_argument(
+        "-o",
+        "--out",
+        type=argparse.FileType("w"),
+        default=sys.stdout,
+        help="Where to output the markdown table",
+    )
+    return parser.parse_args(args)
+
+
+def main(args=None) -> int:
+    args = parse_args(args)
+    moddir = args.moddir
 
     # Switch to the path given to us
     try:
-        os.chdir(sys.argv[1])
+        os.chdir(moddir)
     except FileNotFoundError:
-        print("%s: does not exist" % sys.argv[1], file=sys.stderr)
-        sys.exit(1)
+        print("%s: does not exist" % moddir, file=sys.stderr)
+        return 1
     except PermissionError:
-        print("%s: permission denied" % sys.argv[1], file=sys.stderr)
-        sys.exit(1)
+        print("%s: permission denied" % moddir, file=sys.stderr)
+        return 1
     except NotADirectoryError:
-        print("%s: not a directory" % sys.argv[1], file=sys.stderr)
-        sys.exit(1)
+        print("%s: not a directory" % moddir, file=sys.stderr)
+        return 1
     except OSError as e:
-        print("%s: %s" % (sys.argv[1], e), file=sys.stderr)
-        sys.exit(1)
-
-    lexer = SimpleClausewitzLexer()
-    parser = SimpleClausewitzParser()
+        print("%s: %s" % (moddir, e), file=sys.stderr)
+        return 1
 
     # Copy all files from the ideas folder
     stream = read_all_files_in_dir("common/ideas")
-    result = parser.parse(lexer.tokenize(stream))
+    result = PARSER.parse(LEXER.tokenize(stream))
 
     # The result is a List of all tuples, let's parse it.
     Group_Ideas: List[str] = [
@@ -198,4 +212,9 @@ if __name__ == "__main__":
 
         Idea_Table.append(table_row)
 
-    print(make_markdown_table(Idea_Table))
+    args.out.write(make_markdown_table(Idea_Table))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -129,7 +129,7 @@ def generate_policy_list(dir) -> dict[str, list[str]]:
 
 
 def parse_args(args=None):
-    d = "Read Group Ideas and Policies from a directory and generate a Markdown table"
+    d = "Read Group Ideas and Policies and generate a Markdown table"
     parser = argparse.ArgumentParser(description=d)
     parser.add_argument(
         "moddir",

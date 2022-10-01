@@ -20,17 +20,17 @@
             {
               inherit system;
             };
-              my-python = pkgs.python3;
-              python-with-my-packages = my-python.withPackages (p: with p; [
-                pip
-                # Runtime
-                sly
-                # Development
-                mypy
-                black
-                
-                # Add more deps here
-              ]);
+          my-python = pkgs.python3;
+          python-with-my-packages = my-python.withPackages (p: with p; [
+            pip
+            # Runtime
+            sly
+            # Development
+            mypy
+            black
+
+            # Add more deps here
+          ]);
         in
         {
           devShell =
@@ -41,9 +41,9 @@
                   python-with-my-packages
                 ];
               };
-              packages = {
-                default = python-with-my-packages;
-              };
+          packages = {
+            default = python-with-my-packages;
+          };
         }
       );
 }

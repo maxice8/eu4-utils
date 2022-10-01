@@ -90,7 +90,7 @@ class SimpleClausewitzLexer(Lexer):
 
     # STRING is just a SYMBOL but it can contain whitespace
     # due to being enclosed in double quotes
-    @_(r'"[^"]*"', r"[A-Za-z][A-Za-z_0-9.%-]*")
+    @_(r'"[^"]*"', r"[A-Za-z][A-Za-z_0-9.%-:]*")
     def STRING(self, t):
         # Strip double-quotes from a quoted string with no
         # spaces
@@ -142,6 +142,10 @@ class SimpleClausewitzParser(Parser):
 
     @_("INTEGER")
     def value(self, p):
+        return p[0]
+
+    @_("INTEGER")
+    def field(self, p):
         return p[0]
 
     @_("FLOAT")

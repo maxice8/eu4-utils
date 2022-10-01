@@ -20,26 +20,28 @@
             {
               inherit system;
             };
+              my-python = pkgs.python3;
+              python-with-my-packages = my-python.withPackages (p: with p; [
+                pip
+                # Runtime
+                sly
+                # Development
+                mypy
+                black
+                # Add more deps here
+              ]);
         in
         {
           devShell =
-            let
-              my-python = pkgs.python3;
-              python-with-my-packages = my-python.withPackages (p: with p; [
-                sly
-                # Add more deps here
-              ]);
-            in
             pkgs.mkShell
               {
                 name = "Script-Shell";
                 buildInputs = [
                   python-with-my-packages
                 ];
-                shellHook = ''
-                  PYTHONPATH=${python-with-my-packages}/${python-with-my-packages.sitePackages}
-                  # More Envvars as required
-                '';
+              };
+              packages = {
+                default = python-with-my-packages;
               };
         }
       );

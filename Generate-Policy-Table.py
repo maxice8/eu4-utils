@@ -3,9 +3,10 @@
 import argparse
 import io
 import os
-from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
 import sys
 from typing import Any
+
+from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
 
 LEXER = SimpleCWLexer()
 PARSER = SimpleCWParser()

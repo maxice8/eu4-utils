@@ -3,7 +3,9 @@ from Paradox_Localisation.lexer import LocalisationLexer
 from Paradox_Localisation.parser import LocalisationParser
 
 
-def generate_localisation(dir: str, base: str = None) -> dict[str, dict[str, Any]]:
+def generate_localisation(
+    dir: str, extra_dirs: str | list[str] | None = None
+) -> dict[str, dict[str, Any]]:
     """Generate a dictionary of dictionary representing localisation keys
 
     Args:
@@ -25,17 +27,21 @@ def generate_localisation(dir: str, base: str = None) -> dict[str, dict[str, Any
     wfd = io.StringIO()
 
     # Get all the base games ones if given to us
-    if base is not None:
+    if extra_dirs is not None:
+        if type(extra_dirs) is str:
+            # Redeclare as a list
+            extra_dirs = [extra_dirs]
         # For some reason args.base is passed as a [list] but it only
         # receives a single argument
-        for file in os.listdir(base[0] + "/localisation"):
-            if not file.endswith("l_english.yml"):
-                continue
-            with open(
-                f"{base[0]}/localisation/{file}", "r", encoding="utf-8-sig"
-            ) as fd:
-                wfd.write((fd.read()))
-                wfd.write("\n")
+        for dire in extra_dirs:
+            for file in os.listdir(dire + "/localisation"):
+                if not file.endswith("l_english.yml"):
+                    continue
+                with open(
+                    f"{dire}/localisation/{file}", "r", encoding="utf-8-sig"
+                ) as fd:
+                    wfd.write((fd.read()))
+                    wfd.write("\n")
 
     # Get all the modding ones after as they are the ones that will
     # end up composing the final dictionary, I really should make the

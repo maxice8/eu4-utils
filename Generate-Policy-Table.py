@@ -261,12 +261,7 @@ def main(args=None) -> int:
         # Run over all the values of the table and replace them.
         for idx, x in enumerate(Idea_Table):
             for idy, y in enumerate(x):
-                # Try accessing it, then continue
-                try:
-                    localisation[y]
-                except KeyError:
-                    pass
-                else:
+                if y in localisation:
                     # The [1:-1] is to remove the double-quotes
                     Idea_Table[idx][idy] = localisation[y]["value"][1:-1]
 

@@ -3,10 +3,12 @@
 
 
 import argparse
+import pprint
 import sys
+from os.path import basename
 
-from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
 from Paradox_Localisation import LocalisationLexer, LocalisationParser
+from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
 
 
 def parse_args(args=None):
@@ -35,6 +37,12 @@ def parse_args(args=None):
         default=False,
         help="Parse file after Lexing",
     )
+    parser.add_argument(
+        "-t" "--pretty",
+        action="store_true",
+        default=False,
+        help="use prettyPrint to print the result",
+    )
     return parser.parse_args(args)
 
 
@@ -43,6 +51,12 @@ def main(args=None) -> int:
 
     lexer = None
     parser = None
+
+    if args.t__pretty:
+        if not args.parse:
+            print("%s: pretty-printing requires parsing" % basename(__file__))
+            return 1
+        pp = pprint.PrettyPrinter(indent=2)
 
     if args.localise:
         lexer = LocalisationLexer()
@@ -59,7 +73,10 @@ def main(args=None) -> int:
         tokens = lexer.tokenize(file.read())
         if args.parse:
             parsed = parser.parse(tokens)
-            print(parsed)
+            if args.t__pretty:
+                pp.pprint(parsed)
+            else:
+                print(parsed)
         else:
             for tok in tokens:
                 print(tok)

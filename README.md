@@ -183,6 +183,14 @@ examples:
 - [Ante Bellum Policy Table](https://maxice8.github.io/eu4-diffs/ante-bellum/policies)
 - [Ante Bellum Policy Table Localised](https://maxice8.github.io/eu4-diffs/ante-bellum/policies-localised)
 
+## TODO
+
+Things that need to be fixed in the code:
+
+- [ ] Make the Localisation Lexer and Parser more robust and have better error handling.
+- [ ] Rewrite the Simple_Clausewitz Lexer and Parser to fully cover the Clausewitz code.
+- [ ] Write tests, maybe using vanilla files from eu4 instead of mock files.
+
 ## Acknowledgements
 
 Big thanks to [QAston](https://github.com/QAston/clausewitz-antlr-grammar) for having

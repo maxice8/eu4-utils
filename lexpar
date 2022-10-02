@@ -5,10 +5,8 @@
 import argparse
 import sys
 
-from Simple_Clausewitz.lexer import SimpleCWLexer
-from Simple_Clausewitz.parser import SimpleCWParser
-from Paradox_Localisation.lexer import LocalisationLexer
-from Paradox_Localisation.parser import LocalisationParser
+from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser
+from Paradox_Localisation import LocalisationLexer, LocalisationParser
 
 
 def parse_args(args=None):

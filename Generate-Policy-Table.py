@@ -165,6 +165,10 @@ def main(args=None) -> int:
     args = parse_args(args)
     moddir = args.moddir
 
+    if args.base is not None:
+        if args.localise is False:
+            print("-b|--base is useless without -l|--localise", file=sys.stderr)
+
     # Switch to the path given to us
     try:
         os.chdir(moddir)

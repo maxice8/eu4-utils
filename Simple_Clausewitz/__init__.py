@@ -56,3 +56,11 @@ LINE_COMMENT
     : '#'~[\r\n]* -> channel(HIDDEN)
     ;
 """
+
+from .lexer import SimpleCWLexer
+from .parser import SimpleCWParser
+
+__all__ = (
+    "SimpleCWLexer",
+    "SimpleCWParser",
+)

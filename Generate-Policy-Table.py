@@ -187,7 +187,7 @@ def main(args=None) -> int:
 
     # The result is a List of all tuples, let's parse it.
     Group_Ideas: list[str] = [
-        "-",
+        "",
     ]
     for idea in result:
         ret = is_group_idea(idea)

@@ -216,7 +216,7 @@ def main(args=None) -> int:
     Idea_Table[0] = Group_Ideas
 
     # Get all the policies
-    policies = generate_policy_list(sys.argv[1])
+    policies = generate_policy_list(moddir)
 
     # Skip the first element as it is a '-' and we only
     # want it for the top-most left field

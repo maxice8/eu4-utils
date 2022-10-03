@@ -1,3 +1,6 @@
+from typing import Any
+
+
 def make_markdown_table(array: list[Any]) -> str:
     """Generates a Markdown table from a Python list
 

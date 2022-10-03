@@ -257,7 +257,10 @@ def main(args=None) -> int:
         # to values and versions
         from Paradox_Localisation import generate_localisation
 
-        localisation = generate_localisation(moddir, extra_dirs=args.base)
+        search_dirs: list[str] = [moddir]
+        if args.base is not None:
+            search_dirs.extend(args.base)
+        localisation = generate_localisation(search_dirs)
 
         # Run over all the values of the table and replace them.
         for idx, x in enumerate(Idea_Table):

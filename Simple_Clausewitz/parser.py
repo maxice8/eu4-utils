@@ -3,9 +3,26 @@ from sly import Parser
 from Simple_Clausewitz.lexer import SimpleCWLexer
 
 
+class ParseError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 class SimpleCWParser(Parser):
     # Need
     tokens = SimpleCWLexer.tokens
+
+    # Raise an error
+    def error(self, p):
+        if p:
+            raise ParseError(
+                (
+                    "Token parse error: token=%s type=%s line=%s index=%s"
+                    % (p.value, p.type, p.lineno, p.index)
+                )
+            )
+        if not p:
+            raise ParseError("Syntax error at EOF")
 
     @_("{ pair }")
     def file(self, p):

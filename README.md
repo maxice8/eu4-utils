@@ -194,7 +194,7 @@ Things that need to be fixed in the code:
 - [ ] Rewrite the Simple_Clausewitz Lexer and Parser to fully cover the Clausewitz code.
 - [ ] Write tests, maybe using vanilla files from eu4 instead of mock files.
 - [x] Write code that loads from multiple directories to avoid loading overridden file.
-- [ ] Support other languages in lexpar and general_localisation.
+- [x] Support other languages in lexpar and general_localisation.
 
 ## Acknowledgements
 

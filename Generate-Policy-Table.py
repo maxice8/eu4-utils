@@ -159,6 +159,13 @@ def parse_args(args=None):
         default=sys.stdout,
         help="Where to output the markdown table",
     )
+    parser.add_argument(
+        "--lang",
+        "--language",
+        type=str,
+        default=None,
+        help="language for the localisation",
+    )
     return parser.parse_args(args)
 
 
@@ -166,9 +173,13 @@ def main(args=None) -> int:
     args = parse_args(args)
     moddir = args.moddir
 
-    if args.base is not None:
-        if args.localise is False:
+    if args.localise is False:
+        if args.base is not None:
             print("-b|--base is useless without -l|--localise", file=sys.stderr)
+        if args.lang is not None:
+            print("--lang|--language is useless without -l|--localise", file=sys.stderr)
+        else:
+            args.lang = "english"
 
     # Switch to the path given to us
     try:
@@ -260,7 +271,7 @@ def main(args=None) -> int:
         search_dirs: list[str] = [moddir]
         if args.base is not None:
             search_dirs.extend(args.base)
-        localisation = generate_localisation(search_dirs)
+        localisation = generate_localisation(search_dirs, language=args.lang)
 
         # Run over all the values of the table and replace them.
         for idx, x in enumerate(Idea_Table):

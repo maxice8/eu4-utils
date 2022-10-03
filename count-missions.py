@@ -180,14 +180,26 @@ def parse_args(args=None):
         nargs=1,
         help="extra directories to load localisation from",
     )
+    parser.add_argument(
+        "--lang",
+        "--language",
+        type=str,
+        default=None,
+        help="language for the localisation",
+    )
     return parser.parse_args(args)
 
 
 def main(args=None) -> int:
     args = parse_args(args)
 
-    if not args.localise and args.extra_dir is not None:
-        print("-d|--extra-dir is useless without -l|--localise", file=sys.stderr)
+    if not args.localise:
+        if args.extra_dir is not None:
+            print("-d|--extra-dir is useless without -l|--localise", file=sys.stderr)
+        if args.lang is not None:
+            print("--lang|--language is useless without -l|--localise", file=sys.stderr)
+        else:
+            args.lang = "english"
 
     final_dict: dict[str, tuple[int, int, int]] = count_missions(args.files)
 
@@ -204,7 +216,7 @@ def main(args=None) -> int:
             if dir is not None:
                 search_dirs.add(dir)
 
-        localisation = generate_localisation(list(search_dirs))
+        localisation = generate_localisation(list(search_dirs), language=args.lang)
 
     # Convert it to a list
     for k, v in final_dict.items():

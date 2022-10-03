@@ -4,7 +4,7 @@ from Paradox_Localisation.parser import LocalisationParser
 
 
 def generate_localisation(
-    dir: str, extra_dirs: str | list[str] | None = None
+    basedir: str, extra_dirs: str | list[str] | None = None
 ) -> dict[str, dict[str, Any]]:
     """Generate a dictionary of dictionary representing localisation keys
 
@@ -32,12 +32,12 @@ def generate_localisation(
     # Get all the modding ones after as they are the ones that will
     # end up composing the final dictionary, I really should make the
     # parser work by having a single dictionary.
-    for file in os.listdir(dir + "/localisation"):
+    for file in os.listdir(basedir + "/localisation"):
         if not file.endswith("l_english.yml"):
             continue
         # open with utf-8-sig because of the Byte-Order-Mark required
         # in localisation files
-        with open(f"{dir}/localisation/{file}", "r", encoding="utf-8-sig") as fd:
+        with open(f"{basedir}/localisation/{file}", "r", encoding="utf-8-sig") as fd:
             wfd.write(fd.read())
             wfd.write("\n")
 
@@ -51,12 +51,12 @@ def generate_localisation(
             extra_dirs = [extra_dirs]
         # For some reason args.base is passed as a [list] but it only
         # receives a single argument
-        for dire in reversed(extra_dirs):
-            for file in os.listdir(dire + "/localisation"):
+        for dir in reversed(extra_dirs):
+            for file in os.listdir(dir + "/localisation"):
                 if not file.endswith("l_english.yml") or file in files_seen:
                     continue
                 with open(
-                    f"{dire}/localisation/{file}", "r", encoding="utf-8-sig"
+                    f"{dir}/localisation/{file}", "r", encoding="utf-8-sig"
                 ) as fd:
                     wfd.write((fd.read()))
                     wfd.write("\n")

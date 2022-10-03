@@ -58,9 +58,10 @@ LINE_COMMENT
 """
 
 from .lexer import SimpleCWLexer
-from .parser import SimpleCWParser
+from .parser import SimpleCWParser, ParseError
 
 __all__ = (
     "SimpleCWLexer",
     "SimpleCWParser",
+    "ParseError",
 )

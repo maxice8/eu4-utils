@@ -8,8 +8,10 @@ readme = "README.md"
 packages = [
     {include = "Simple_Clausewitz"},
     {include = "Paradox_Localisation"},
+    {include = "hw_utils"},
     {include = "Generate-Policy-Table.py"},
-    {include = "lexpar"}
+    {include = "lexpar"},
+    {include = "count-missions.py"}
 ]
 
 [tool.poetry.dependencies]

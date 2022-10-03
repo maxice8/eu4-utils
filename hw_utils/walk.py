@@ -1,6 +1,3 @@
-from operator import truediv
-
-
 def has_mapping(tree: tuple, mapping: tuple, in_not: bool = False) -> bool:
     """check if a tuple is present in the given tree
 

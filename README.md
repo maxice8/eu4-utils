@@ -181,11 +181,34 @@ examples:
 
 - [Ante Bellum Policy Table](https://maxice8.github.io/ab/policies)
 
+Usage for the example above:
+
+> The usage of $VARIABLE is to avoid writing the full path to the directory
+> you must replace it with the proper path.
+
+```console
+$ python3 Generate-Policy-Table.py $PATH_TO_ANTE_BELLUM \
+  --localise --base $PATH_TO_VANILLA_INSTALLATION \
+  | python3 aux/table-md-to-html.py --highlight-first-row \
+  -o $PATH_TO_STORE_THE_FILE.html
+```
+
 ## count-missions.py
 
 A simple script that generates a Markdown table of countries and how many missions it has, it has a simple heuristic to differentiate between Normal and Branching missions but it is not smart enough to differentiate branching missions by things like country flags or religion.
 
 - [Ante Bellum Missions](https://maxice8.github.io/ab/mission-count)
+
+Usage for the example above:
+
+> The usage of $VARIABLE is to avoid writing the full path to the directory
+> you must replace it with the proper path.
+
+```console
+$ python3 count-mission.py $PATH_TO_ANTE_BELLUM_MISSIONS_DIRECTORY/* \
+  -d $PATH_TO_VANILLA_INSTALLATION --localise --lang=english --ante-bellum \
+  | python3 aux/table-md-to-html.py -o $PATH_TO_STORE_THE_FILE.html
+```
 
 ## TODO
 

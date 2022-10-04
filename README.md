@@ -31,7 +31,6 @@ with open("example_file.txt", 'r') as f:
 This is the eu4 script:
 
 ```txt
-<!-- markdownlint-disable MD010 -->
 DLM_ideas = {
 	start = {
 		naval_forcelimit_modifier = 0.2

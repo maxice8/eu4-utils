@@ -10,13 +10,13 @@ def has_mapping(tree: tuple, mapping: tuple, in_not: bool = False) -> bool:
         bool: whether the mapping is present in the tree
     """
     for elem in tree:
-        if elem[0].upper() == "NOT":
+        if elem == mapping and in_not is False:
+            return True
+        elif elem[0].upper() == "NOT":
             if has_mapping(elem[1], mapping, in_not=not in_not):
                 return True
         elif any(x == elem[0].upper() for x in ["AND", "OR"]):
             if has_mapping(elem[1], mapping, in_not=not in_not):
                 return True
-        elif elem == mapping and in_not is False:
-            return True
 
     return False

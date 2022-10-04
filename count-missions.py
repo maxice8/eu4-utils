@@ -3,13 +3,38 @@
 import argparse
 import sys
 from os.path import basename
+from typing import Any
 
 from Paradox_Localisation.utils import generate_localisation
 from Simple_Clausewitz import SimpleCWLexer, SimpleCWParser, ParseError
-from hw_utils import make_markdown_table
+from hw_utils import make_markdown_table, has_mapping
 
 LEXER = SimpleCWLexer()
 PARSER = SimpleCWParser()
+
+ANTE_BELLUM: bool = False
+
+
+def add_normal_mission(dic: dict[str, tuple[int, int, int]], tag: str):
+    try:
+        dic[tag] = (
+            dic[tag][0] + 1,
+            dic[tag][1] + 1,
+            dic[tag][2],
+        )
+    except KeyError:
+        dic[tag] = (1, 1, 0)
+
+
+def add_branching_mission(dic: dict[str, tuple[int, int, int]], tag: str):
+    try:
+        dic[tag] = (
+            dic[tag][0] + 1,
+            dic[tag][1],
+            dic[tag][2] + 1,
+        )
+    except KeyError:
+        dic[tag] = (1, 0, 1)
 
 
 def search_up(file: str) -> str | None:
@@ -57,10 +82,12 @@ def count_missions(files: list) -> dict[str, tuple[int, int, int]]:
 
         for mission_group in result:
             eligible_tags: set[str] = set()
+            potential_statement: tuple[str, Any]
             for statement in mission_group[1]:
                 # Check the "potential = { }" block to see which tags
                 # are eligible for the missions
                 if statement[0] == "potential":
+                    potential_statement = statement[1]
                     _, _, eligible_tags = walk(statement[1], False, None)
 
             for statement in mission_group[1]:
@@ -96,24 +123,128 @@ def count_missions(files: list) -> dict[str, tuple[int, int, int]]:
                         ]
                     ):
                         for tag in eligible_tags:
-                            try:
-                                dic[tag] = (
-                                    dic[tag][0] + 1,
-                                    dic[tag][1],
-                                    dic[tag][2] + 1,
-                                )
-                            except KeyError:
-                                dic[tag] = (1, 0, 1)
+                            if ANTE_BELLUM:
+                                # Check for Golden Horde branches
+                                if tag == "GLH" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "glh_european_tree"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+European Path"))
+                                    continue
+                                if tag == "GLH" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "glh_horde_tree"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+Horde Path"))
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "YUA_HORDE"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+Horde Path"))
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    (
+                                        "NOT",
+                                        [
+                                            ("has_country_flag", "YUA_HORDE"),
+                                            ("has_country_flag", "YUA_NESTORIAN"),
+                                        ],
+                                    ),
+                                ):
+                                    add_branching_mission(
+                                        dic, (tag + "+Sinicized Path")
+                                    )
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    ("religion", "nestorian"),
+                                ):
+                                    add_branching_mission(
+                                        dic, (tag + "+Nestorian Path")
+                                    )
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement,
+                                    ("religion_group", "christian"),
+                                ):
+                                    add_branching_mission(
+                                        dic, (tag + "+Christian Path")
+                                    )
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement, ("religion_group", "muslim")
+                                ):
+                                    add_branching_mission(dic, (tag + "+Muslim Path"))
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement, ("religion", "zoroastrian")
+                                ):
+                                    add_branching_mission(
+                                        dic, (tag + "+Zoroastrian Path")
+                                    )
+                                    continue
+
+                            add_branching_mission(dic, tag)
                     else:
                         for tag in eligible_tags:
-                            try:
-                                dic[tag] = (
-                                    dic[tag][0] + 1,
-                                    dic[tag][1] + 1,
-                                    dic[tag][2],
-                                )
-                            except KeyError:
-                                dic[tag] = (1, 1, 0)
+                            if ANTE_BELLUM:
+                                # Check for Golden Horde branches
+                                if tag == "GLH" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "glh_european_tree"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+European Path"))
+                                    continue
+                                if tag == "GLH" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "glh_horde_tree"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Horde Path"))
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "YUA_HORDE"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Horde Path"))
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    (
+                                        "NOT",
+                                        [
+                                            ("has_country_flag", "YUA_HORDE"),
+                                            ("has_country_flag", "YUA_NESTORIAN"),
+                                        ],
+                                    ),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Sinicized Path"))
+                                    continue
+                                if tag == "YUA" and has_mapping(
+                                    potential_statement,
+                                    ("religion", "nestorian"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Nestorian Path"))
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement,
+                                    ("religion_group", "christian"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Christian Path"))
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement, ("religion_group", "muslim")
+                                ):
+                                    add_normal_mission(dic, (tag + "+Muslim Path"))
+                                    continue
+                                if tag == "RUM" and has_mapping(
+                                    potential_statement, ("religion", "zoroastrian")
+                                ):
+                                    add_normal_mission(dic, (tag + "+Zoroastrian Path"))
+                                    continue
+
+                            add_normal_mission(dic, tag)
 
     return dic
 
@@ -155,11 +286,24 @@ def parse_args(args=None):
         default=None,
         help="language for the localisation",
     )
+    parser.add_argument(
+        "-ab",
+        "--ante-bellum",
+        action="store_true",
+        default=False,
+        help="enable Ante-Bellum specific code handling",
+    )
     return parser.parse_args(args)
 
 
 def main(args=None) -> int:
     args = parse_args(args)
+
+    if args.ante_bellum:
+        # We were passed --ante-bellum, enable ANTE_BELLUM specific
+        # code handling
+        global ANTE_BELLUM
+        ANTE_BELLUM = True
 
     if not args.localise:
         if args.extra_dir is not None:
@@ -189,8 +333,18 @@ def main(args=None) -> int:
     # Convert it to a list
     for k, v in final_dict.items():
         if localisation is not None:
-            # Rewrite the key to include localisation
-            k = "%s (%s)" % (localisation[k]["value"][1:-1], k)
+            # Replace the '+String' in the localisation
+            if "+" in k:
+                klist = k.split("+")
+                k = "%s (%s) (%s)" % (
+                    localisation[klist[0]]["value"][1:-1],
+                    klist[1],
+                    klist[0],
+                )
+            else:
+                # Rewrite the key to include localisation
+                k = "%s (%s)" % (localisation[k]["value"][1:-1], k)
+
         final_list.append([k, str(v[0]), str(v[1]), str(v[2])])
         final_list.sort(key=lambda x: int(x[1]), reverse=True)
 

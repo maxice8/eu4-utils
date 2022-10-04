@@ -317,18 +317,21 @@ def main(args=None) -> int:
 
     final_list: list[list[str]] = []
 
-    search_dirs: set[str] = set()
+    search_dirs: list[str] = list()
     localisation = None
     if args.localise:
         if args.extra_dir is not None:
-            for dir in args.extra_dir:
-                search_dirs.add(dir)
+            for dire in args.extra_dir:
+                search_dirs.append(dire)
         for file in reversed(args.files):
             dir = search_up(file.name)
             if dir is not None:
-                search_dirs.add(dir)
+                search_dirs.append(dir)
 
-        localisation = generate_localisation(list(search_dirs), language=args.lang)
+        # Remove duplicates
+        search_dirs = list(dict.fromkeys(search_dirs))
+
+        localisation = generate_localisation(search_dirs, language=args.lang)
 
     # Convert it to a list
     for k, v in final_dict.items():

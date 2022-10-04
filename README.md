@@ -185,6 +185,8 @@ examples:
 
 A simple script that generates a Markdown table of countries and how many missions it has, it has a simple heuristic to differentiate between Normal and Branching missions but it is not smart enough to differentiate branching missions by things like country flags or religion.
 
+- [Ante Bellum Missions](https://maxice8.github.io/ab/mission-count)
+
 ## TODO
 
 Things that need to be fixed in the code:

@@ -43,6 +43,13 @@ def parse_args(args=None):
         default=False,
         help="use prettyPrint to print the result",
     )
+    parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        default=False,
+        help="print JSON",
+    )
     return parser.parse_args(args)
 
 
@@ -52,9 +59,27 @@ def main(args=None) -> int:
     lexer = None
     parser = None
 
+    if args.t__pretty and args.json:
+        print(
+            "%s: pretty-printing and print JSON are mutually exclusive"
+            % basename(__file__),
+            file=sys.stderr,
+        )
+        return 1
+
+    if args.json:
+        if not args.parse:
+            print(
+                "%s: json output requires parsing" % basename(__file__), file=sys.stderr
+            )
+            return 1
+
     if args.t__pretty:
         if not args.parse:
-            print("%s: pretty-printing requires parsing" % basename(__file__))
+            print(
+                "%s: pretty-printing requires parsing" % basename(__file__),
+                file=sys.stderr,
+            )
             return 1
         pp = pprint.PrettyPrinter(indent=2)
 
@@ -75,6 +100,10 @@ def main(args=None) -> int:
             parsed = parser.parse(tokens)
             if args.t__pretty:
                 pp.pprint(parsed)
+            elif args.json:
+                import json
+
+                print(json.dumps(parsed))
             else:
                 print(parsed)
         else:

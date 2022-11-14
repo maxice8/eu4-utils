@@ -16,7 +16,7 @@ def has_mapping(tree: tuple, mapping: tuple, in_not: bool = False) -> bool:
             if has_mapping(elem[1], mapping, in_not=not in_not):
                 return True
         elif any(x == elem[0].upper() for x in ["AND", "OR"]):
-            if has_mapping(elem[1], mapping, in_not=not in_not):
+            if has_mapping(elem[1], mapping, in_not=in_not):
                 return True
 
     return False

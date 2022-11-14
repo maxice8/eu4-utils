@@ -185,6 +185,24 @@ def count_missions(files: list) -> dict[str, tuple[int, int, int]]:
                                         dic, (tag + "+Zoroastrian Path")
                                     )
                                     continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_pagan_path"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+Pagan Path"))
+                                    continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_orthodox_path"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+Orthodox Path"))
+                                    continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_catholic_path"),
+                                ):
+                                    add_branching_mission(dic, (tag + "+Catholic Path"))
+                                    continue
 
                             add_branching_mission(dic, tag)
                     else:
@@ -242,6 +260,24 @@ def count_missions(files: list) -> dict[str, tuple[int, int, int]]:
                                     potential_statement, ("religion", "zoroastrian")
                                 ):
                                     add_normal_mission(dic, (tag + "+Zoroastrian Path"))
+                                    continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_pagan_path"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Pagan Path"))
+                                    continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_orthodox_path"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Orthodox Path"))
+                                    continue
+                                if tag == "LIT" and has_mapping(
+                                    potential_statement,
+                                    ("has_country_flag", "lithuania_catholic_path"),
+                                ):
+                                    add_normal_mission(dic, (tag + "+Catholic Path"))
                                     continue
 
                             add_normal_mission(dic, tag)
